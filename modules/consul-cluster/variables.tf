@@ -93,9 +93,14 @@ variable "associate_public_ip_address" {
   default     = false
 }
 
+variable "spot_price" {
+  description = "The maximum hourly price to pay for EC2 Spot Instances."
+  default     = ""
+}
+
 variable "tenancy" {
-  description = "The tenancy of the instance. Must be one of: default or dedicated."
-  default     = "default"
+  description = "The tenancy of the instance. Must be one of: empty string, default or dedicated. For EC2 Spot Instances only empty string or dedicated can be used."
+  default     = ""
 }
 
 variable "root_volume_ebs_optimized" {
@@ -116,18 +121,6 @@ variable "root_volume_size" {
 variable "root_volume_delete_on_termination" {
   description = "Whether the volume should be destroyed on instance termination."
   default     = true
-}
-
-variable "target_group_arns" {
-  description = "A list of target group ARNs of Application Load Balanacer (ALB) targets to associate with this ASG. If you're using a Elastic Load Balancer (AKA ELB Classic), use the load_balancers variable instead."
-  type        = "list"
-  default     = []
-}
-
-variable "load_balancers" {
-  description = "A list of Elastic Load Balancer (ELB) names to associate with this ASG. If you're using an Application Load Balancer (ALB), use the target_group_arns variable instead."
-  type        = "list"
-  default     = []
 }
 
 variable "wait_for_capacity_timeout" {
@@ -183,4 +176,10 @@ variable "dns_port" {
 variable "ssh_port" {
   description = "The port used for SSH connections"
   default     = 22
+}
+
+variable "tags" {
+  description = "List fo extra tag blocks added to the autoscaling group configuration. Each element in the list is a map containing keys 'key', 'value', and 'propagate_at_launch' mapped to the respective values."
+  type        = "list"
+  default     = []
 }

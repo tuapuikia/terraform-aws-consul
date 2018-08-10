@@ -1,31 +1,31 @@
-# Consul Security Group Rules Module
+# Consul Client Security Group Rules Module
 
 This folder contains a [Terraform](https://www.terraform.io/) module that defines the security group rules used by a 
-[Consul](https://www.consul.io/) cluster to control the traffic that is allowed to go in and out of the cluster. 
+[Consul](https://www.consul.io/) client to control the traffic that is allowed to go in and out. 
 
 Normally, you'd get these rules by default if you're using the [consul-cluster module](https://github.com/hashicorp/terraform-aws-consul/tree/master/MAIN.md), but if 
 you're running Consul on top of a different cluster, then you can use this module to add the necessary security group 
-rules to that cluster. For example, imagine you were using the [nomad-cluster 
-module](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/nomad-cluster) to run a cluster of 
-servers that have both Nomad and Consul on each node:
+rules to that cluster. For example, imagine you were using the [vault-cluster 
+module](https://github.com/hashicorp/terraform-aws-vault/tree/master/modules/vault-cluster) to run a cluster of 
+servers that have both Vault and Consul agent on each node:
 
 ```hcl
-module "nomad_servers" {
-  source = "git::git@github.com:hashicorp/terraform-aws-nomad.git//modules/nomad-cluster?ref=v0.0.1"
+module "vault_servers" {
+  source = "git::git@github.com:hashicorp/terraform-aws-vault.git//modules/vault-cluster?ref=v0.0.1"
   
-  # This AMI has both Nomad and Consul installed
+  # This AMI has both Vault and Consul installed
   ami_id = "ami-1234abcd"
 }
 ```
 
-The `nomad-cluster` module will provide the security group rules for Nomad, but not for Consul. To ensure those servers
+The `vault-cluster` module will provide the security group rules for Vault, but not for the Consul agent. To ensure those servers
 have the necessary ports open for using Consul, you can use this module as follows:
 
 ```hcl
 module "security_group_rules" {
-  source = "git::git@github.com:hashicorp/terraform-aws-consul.git//modules/consul-security-group-rules?ref=v0.0.2"
+  source = "git::git@github.com:hashicorp/terraform-aws-consul.git//modules/consul-client-security-group-rules?ref=v0.0.2"
 
-  security_group_id = "${module.nomad_servers.security_group_id}"
+  security_group_id = "${module.vault_servers.security_group_id}"
   
   # ... (other params omitted) ...
 }
